@@ -2,6 +2,9 @@
   "private": true,
   "author": "Cybozu, Inc.",
   "license": "MIT",
+  "engines": {
+    "node": "12.x"
+  },
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
