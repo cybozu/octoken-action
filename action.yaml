@@ -1,0 +1,23 @@
+name: Octoken
+description: GitHub Action for creating installation access tokens for a GitHub App
+author: Cybozu
+inputs:
+  github_app_id:
+    required: true
+    description: ID of the GitHub App used to create the Access Token
+  github_app_private_key:
+    required: true
+    description: A private key of the GitHub App used to create the Access Token
+  target_account:
+    required: false
+    description: The target user or organization that you want to access with the token
+    default: (The owner of the repository in which the Workflow is running)
+outputs:
+  token:
+    description: An installation access token created
+runs:
+  using: node12
+  main: dist/index.js
+branding:
+  icon: lock
+  color: gray-dark
