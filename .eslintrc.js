@@ -17,6 +17,9 @@ module.exports = {
   rules: {
     "quotes": ["error", "double", { "avoidEscape": true }],
     "object-curly-spacing": ["error", "always", { "arraysInObjects": true }],
-    "node/no-unsupported-features/es-syntax": "off"
+    "node/no-unsupported-features/es-syntax": "off",
+    "node/no-unpublished-import": ["error", {
+      "allowModules": ["nock"]
+    }]
   }
 };
