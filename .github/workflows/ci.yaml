@@ -3,7 +3,11 @@ name: Continuous Integration
 on: push
 
 jobs:
-  test:
+  npm-run:
+    name: ${{ matrix.stage }}
+    strategy:
+      matrix:
+        stage: [test, lint, package]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,4 +24,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - run: npm ci
-      - run: npm test
+      - run: npm run ${{ matrix.stage }}
+      - if: ${{ matrix.stage == 'package' }}
+        name: Check for differences in compilation results
+        run: |
+          git update-index --refresh
+          git diff-index --quiet HEAD --
