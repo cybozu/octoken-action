@@ -2,7 +2,7 @@
 
 This action makes it easy to get a token for your GitHub App.
 
-[![GitHub Actions status](https://github.com/cybozu/octoken-action/workflows/Test/badge.svg)](https://github.com/cybozu/octoken-action/actions?query=workflow%3ATest)
+[![GitHub Actions status](https://github.com/cybozu/octoken-action/workflows/Continuous%20Integration/badge.svg)](https://github.com/cybozu/octoken-action/actions?query=workflow%3A%22Continuous+Integration%22)
 
 ## Usage
 
