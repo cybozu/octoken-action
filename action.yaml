@@ -11,7 +11,6 @@ inputs:
   target_account:
     required: false
     description: The target user or organization that you want to access with the token
-    default: (The owner of the repository in which the Workflow is running)
 outputs:
   token:
     description: An installation access token created
