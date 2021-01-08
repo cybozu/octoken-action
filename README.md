@@ -45,7 +45,7 @@ jobs:
         env:
           IAT: ${{ steps.create-iat.outputs.token }}
         run: |
-          curl -i -H "Authorization: token ${IAT}" https://api.github.com/installation/repositories
+          curl --include --fail -H "Authorization: token ${IAT}" https://api.github.com/installation/repositories
 ```
 
 ## License
