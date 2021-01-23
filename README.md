@@ -38,7 +38,7 @@ jobs:
         id: create-iat
         with:
           github_app_id: 12345
-          github_app_private_key: ${{ secret.GH_APP_PRIVATE_KEY }}
+          github_app_private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           target_account: cybozu
 
       - name: Use Installation Access Token
