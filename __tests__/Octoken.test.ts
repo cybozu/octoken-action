@@ -59,10 +59,8 @@ describe("Octoken", () => {
       expect(mockGetInstallationAccessToken).toHaveBeenCalledTimes(1);
       expect(mockGetInstallationAccessToken).toHaveBeenCalledWith("test_org");
 
-      expect(mockWrite).toHaveBeenCalledTimes(2);
-      expect(mockWrite).toHaveBeenNthCalledWith(1, "::add-mask::dummy_token\n");
-      expect(mockWrite).toHaveBeenNthCalledWith(
-        2,
+      expect(mockWrite).toHaveBeenCalledWith("::add-mask::dummy_token\n");
+      expect(mockWrite).toHaveBeenCalledWith(
         "::set-output name=token::dummy_token\n"
       );
 
@@ -92,13 +90,10 @@ describe("Octoken", () => {
       expect(mockGetInstallationAccessToken).toHaveBeenCalledTimes(1);
       expect(mockGetInstallationAccessToken).toHaveBeenCalledWith("other_org");
 
-      expect(mockWrite).toHaveBeenCalledTimes(2);
-      expect(mockWrite).toHaveBeenNthCalledWith(
-        1,
+      expect(mockWrite).toHaveBeenCalledWith(
         "::add-mask::dummy_token_for_other_org\n"
       );
-      expect(mockWrite).toHaveBeenNthCalledWith(
-        2,
+      expect(mockWrite).toHaveBeenCalledWith(
         "::set-output name=token::dummy_token_for_other_org\n"
       );
 
