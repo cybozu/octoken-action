@@ -15,7 +15,7 @@ outputs:
   token:
     description: An installation access token created
 runs:
-  using: node12
+  using: node16
   main: dist/index.js
 branding:
   icon: lock

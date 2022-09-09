@@ -3,7 +3,7 @@
   "author": "Cybozu, Inc.",
   "license": "MIT",
   "engines": {
-    "node": "12.x"
+    "node": "16.x"
   },
   "main": "lib/main.js",
   "scripts": {
