@@ -1,9 +1,8 @@
+import { getInput, setFailed, setOutput, setSecret } from "@actions/core";
 import { run } from "../src/Octoken";
 import { TokenCreator } from "../src/TokenCreator";
 
-const mockWrite = jest
-  .spyOn(process.stdout, "write")
-  .mockImplementation(() => true);
+jest.mock("@actions/core");
 
 let mockGetInstallationAccessToken = jest.fn();
 
@@ -19,23 +18,22 @@ jest.mock("../src/TokenCreator", () => {
 
 describe("Octoken", () => {
   describe(".run", () => {
-    const OLD_ENV = process.env;
+    let inputs: Record<string, string>;
 
     beforeEach(() => {
-      process.env = { ...OLD_ENV };
+      // Returns a dummy value from core.getInput
+      inputs = {
+        github_app_id: "1234",
+        github_app_private_key: "dummy_key",
+        target_account: "test_org",
+      };
+      (getInput as jest.Mock).mockImplementation((name) => inputs[name]);
 
-      process.env.INPUT_GITHUB_APP_ID = "1234";
-      process.env.INPUT_GITHUB_APP_PRIVATE_KEY = "dummy_key";
-      process.env.GITHUB_REPOSITORY = "test_org/test_repo";
-    });
-
-    afterEach(() => {
-      // cleanup mock
-      mockWrite.mockClear();
-
-      // cleanup environment variables
-      jest.resetModules();
-      process.env = OLD_ENV;
+      // Revert core.setFailed to the original implementation
+      const { setFailed: originalSetFailed } = jest.requireActual(
+        "@actions/core"
+      );
+      (setFailed as jest.Mock).mockImplementation(originalSetFailed);
     });
 
     it("outputs the token settings", async () => {
@@ -59,17 +57,15 @@ describe("Octoken", () => {
       expect(mockGetInstallationAccessToken).toHaveBeenCalledTimes(1);
       expect(mockGetInstallationAccessToken).toHaveBeenCalledWith("test_org");
 
-      expect(mockWrite).toHaveBeenCalledWith("::add-mask::dummy_token\n");
-      expect(mockWrite).toHaveBeenCalledWith(
-        "::set-output name=token::dummy_token\n"
-      );
+      expect(setSecret).toHaveBeenCalledWith("dummy_token");
+      expect(setOutput).toHaveBeenCalledWith("token", "dummy_token");
 
       expect(process.exitCode).toBeUndefined();
     });
 
     it("outputs the token settings for the specified account", async () => {
       // setup
-      process.env.INPUT_TARGET_ACCOUNT = "other_org";
+      inputs.target_account = "other_org";
 
       mockGetInstallationAccessToken = jest
         .fn()
@@ -90,11 +86,10 @@ describe("Octoken", () => {
       expect(mockGetInstallationAccessToken).toHaveBeenCalledTimes(1);
       expect(mockGetInstallationAccessToken).toHaveBeenCalledWith("other_org");
 
-      expect(mockWrite).toHaveBeenCalledWith(
-        "::add-mask::dummy_token_for_other_org\n"
-      );
-      expect(mockWrite).toHaveBeenCalledWith(
-        "::set-output name=token::dummy_token_for_other_org\n"
+      expect(setSecret).toHaveBeenCalledWith("dummy_token_for_other_org");
+      expect(setOutput).toHaveBeenCalledWith(
+        "token",
+        "dummy_token_for_other_org"
       );
 
       expect(process.exitCode).toBeUndefined();
@@ -112,8 +107,8 @@ describe("Octoken", () => {
       await run();
 
       // verify
-      expect(mockWrite).toHaveBeenCalledTimes(1);
-      expect(mockWrite).toHaveBeenCalledWith("::error::test error\n");
+      expect(setFailed).toHaveBeenCalledTimes(1);
+      expect(setFailed).toHaveBeenCalledWith("test error");
 
       expect(process.exitCode).toBe(1);
     });
