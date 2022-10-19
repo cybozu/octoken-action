@@ -1,32 +1,67 @@
-name: Continuous Integration
+name: CI
 
-on: push
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  npm-run:
-    name: ${{ matrix.stage }}
-    strategy:
-      matrix:
-        stage: [test, lint, package]
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Read .node-version
-        id: nodenv
-        run: echo ::set-output name=node-version::$(cat .node-version)
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ steps.nodenv.outputs.node-version }}
-      - uses: actions/cache@v2
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install Node modules
+        run: npm ci
+
+      - name: Run test
+        run: npm test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - run: npm ci
-      - run: npm run ${{ matrix.stage }}
-      - if: ${{ matrix.stage == 'package' }}
-        name: Check for differences in compilation results
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install Node modules
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install Node modules
+        run: npm ci
+
+      - name: Run package
+        run: npm run package
+
+      - name: Check for differences in compilation results
         run: |
           git update-index --refresh
           git diff-index --quiet HEAD --
