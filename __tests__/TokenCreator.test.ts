@@ -1,16 +1,21 @@
 import { TokenCreator } from "../src/TokenCreator";
 import nock from "nock";
+import { createAppAuth } from "@octokit/auth-app";
 
-jest.mock("@octokit/auth-app", () => ({
-  createAppAuth: () => () => ({
-    type: "app",
-    token: "dummy_jwt",
-  }),
-}));
+jest.mock("@octokit/auth-app");
 
 describe(TokenCreator, () => {
   describe("#getInstallationAccessToken", () => {
     beforeEach(() => {
+      // Returns a dummy value from createAppAuth
+      (createAppAuth as jest.Mock).mockImplementation(() => {
+        return () => ({
+          type: "app",
+          token: "dummy_jwt",
+        });
+      });
+
+      // Returns a dummy value from GitHub API
       nock("https://api.github.com")
         .get("/app/installations")
         .reply(200, [

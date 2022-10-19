@@ -3,18 +3,7 @@ import { run } from "../src/Octoken";
 import { TokenCreator } from "../src/TokenCreator";
 
 jest.mock("@actions/core");
-
-let mockGetInstallationAccessToken = jest.fn();
-
-jest.mock("../src/TokenCreator", () => {
-  return {
-    TokenCreator: jest.fn().mockImplementation(() => {
-      return {
-        getInstallationAccessToken: mockGetInstallationAccessToken,
-      };
-    }),
-  };
-});
+jest.mock("../src/TokenCreator");
 
 describe("Octoken", () => {
   describe(".run", () => {
@@ -38,11 +27,9 @@ describe("Octoken", () => {
 
     it("outputs the token settings", async () => {
       // setup
-      mockGetInstallationAccessToken = jest
-        .fn()
-        .mockImplementation(async () => {
-          return "dummy_token";
-        });
+      const getInstallationAccessTokenMock = jest
+        .spyOn(TokenCreator.prototype, "getInstallationAccessToken")
+        .mockResolvedValue("dummy_token");
 
       // exercise
       await run();
@@ -54,8 +41,8 @@ describe("Octoken", () => {
         privateKey: "dummy_key",
       });
 
-      expect(mockGetInstallationAccessToken).toHaveBeenCalledTimes(1);
-      expect(mockGetInstallationAccessToken).toHaveBeenCalledWith("test_org");
+      expect(getInstallationAccessTokenMock).toHaveBeenCalledTimes(1);
+      expect(getInstallationAccessTokenMock).toHaveBeenCalledWith("test_org");
 
       expect(setSecret).toHaveBeenCalledWith("dummy_token");
       expect(setOutput).toHaveBeenCalledWith("token", "dummy_token");
@@ -67,11 +54,9 @@ describe("Octoken", () => {
       // setup
       inputs.target_account = "other_org";
 
-      mockGetInstallationAccessToken = jest
-        .fn()
-        .mockImplementation(async () => {
-          return "dummy_token_for_other_org";
-        });
+      const getInstallationAccessTokenMock = jest
+        .spyOn(TokenCreator.prototype, "getInstallationAccessToken")
+        .mockResolvedValue("dummy_token_for_other_org");
 
       // exercise
       await run();
@@ -83,8 +68,8 @@ describe("Octoken", () => {
         privateKey: "dummy_key",
       });
 
-      expect(mockGetInstallationAccessToken).toHaveBeenCalledTimes(1);
-      expect(mockGetInstallationAccessToken).toHaveBeenCalledWith("other_org");
+      expect(getInstallationAccessTokenMock).toHaveBeenCalledTimes(1);
+      expect(getInstallationAccessTokenMock).toHaveBeenCalledWith("other_org");
 
       expect(setSecret).toHaveBeenCalledWith("dummy_token_for_other_org");
       expect(setOutput).toHaveBeenCalledWith(
@@ -97,16 +82,17 @@ describe("Octoken", () => {
 
     it("sets the error status when an error occurs", async () => {
       // setup
-      mockGetInstallationAccessToken = jest
-        .fn()
-        .mockImplementation(async () => {
-          throw new Error("test error");
-        });
+      const getInstallationAccessTokenMock = jest
+        .spyOn(TokenCreator.prototype, "getInstallationAccessToken")
+        .mockRejectedValue(new Error("test error"));
 
       // exercise
       await run();
 
       // verify
+      expect(getInstallationAccessTokenMock).toHaveBeenCalledTimes(1);
+      expect(getInstallationAccessTokenMock).toHaveBeenCalledWith("test_org");
+
       expect(setFailed).toHaveBeenCalledTimes(1);
       expect(setFailed).toHaveBeenCalledWith("test error");
 
