@@ -22,7 +22,7 @@ export const run = async (): Promise<void> => {
 
     core.setSecret(iat);
     core.setOutput("token", iat);
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message);
   }
 };
