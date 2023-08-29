@@ -1,0 +1,51 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":label(renovate)", // Add label.
+    ":prConcurrentLimit10", // Limit to maximum 10 open PRs.
+    ":timezone(Asia/Tokyo)",
+    ":enableVulnerabilityAlertsWithLabel(security)", // Raise PR when vulnerability alerts are detected with label security.
+    ":semanticCommitTypeAll(chore)", // If semantic commits detected, use semantic commit type chore for all
+  ],
+  "dependencyDashboardLabels": ["renovate"],
+  "schedule": ["after 3am on the first day of the month"], // Monthly(before 3am on the first day of the month) is unstable.
+  "packageRules": [
+    // The lower rule always takes precedence.
+    {
+      "groupName": "minor dependencies for npm",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor"],
+    },
+    {
+      "description": "Ignore major dependencies for npm because we will upgrade major versions of them manually",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false,
+    },
+    {
+      "groupName": "devDependencies for npm",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "separateMajorMinor": false,
+      "automerge": true,
+    },
+    {
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"],
+    },
+    {
+      "description": "Ignore nodejs engine version because we will upgrade it manually",
+      "matchPackageNames": ["node"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": [ "engines" ],
+      "enabled": false,
+    },
+  ],
+  "nodenv": {
+    // Ignore nodenv version because we will upgrade it manually
+    enabled: false,
+  },
+}
