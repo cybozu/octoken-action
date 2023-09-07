@@ -2,21 +2,20 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    ":label(renovate)", // Add label.
+    ":label(dependencies)", // Add label.
     ":prConcurrentLimit10", // Limit to maximum 10 open PRs.
     ":timezone(Asia/Tokyo)",
     ":enableVulnerabilityAlertsWithLabel(security)", // Raise PR when vulnerability alerts are detected with label security.
     ":semanticCommitTypeAll(chore)", // If semantic commits detected, use semantic commit type chore for all
   ],
-  "dependencyDashboardLabels": ["renovate"],
   "schedule": ["after 3am on the first day of the month"], // Monthly(before 3am on the first day of the month) is unstable.
   "packageRules": [
     // The lower rule always takes precedence.
     {
-      "groupName": "minor dependencies for npm",
+      "groupName": "non-major dependencies for npm",
       "matchManagers": ["npm"],
       "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["minor"],
+      "matchUpdateTypes": ["minor", "patch"],
     },
     {
       "description": "Ignore major dependencies for npm because we will upgrade major versions of them manually",
@@ -43,9 +42,19 @@
       "matchDepTypes": [ "engines" ],
       "enabled": false,
     },
+    {
+      "groupName": "non-major nodejs version",
+      "matchPackageNames": ["node"],
+      "matchManagers": ["nodenv"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+    },
+    {
+      "description": "Ignore major nodejs version because we will upgrade it manually",
+      "matchPackageNames": ["node"],
+      "matchManagers": ["nodenv"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false,
+    },
   ],
-  "nodenv": {
-    // Ignore nodenv version because we will upgrade it manually
-    enabled: false,
-  },
 }
