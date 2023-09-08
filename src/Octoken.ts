@@ -6,7 +6,7 @@ export const run = async (): Promise<void> => {
   try {
     const appId = parseInt(
       core.getInput("github_app_id", { required: true }),
-      10
+      10,
     );
     const privateKey = core.getInput("github_app_private_key", {
       required: true,
@@ -16,9 +16,8 @@ export const run = async (): Promise<void> => {
 
     const tokenCreator = new TokenCreator({ appId, privateKey });
 
-    const iat = await tokenCreator.getInstallationAccessToken(
-      targetAccountName
-    );
+    const iat =
+      await tokenCreator.getInstallationAccessToken(targetAccountName);
 
     core.setSecret(iat);
     core.setOutput("token", iat);

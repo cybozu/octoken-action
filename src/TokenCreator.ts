@@ -28,22 +28,21 @@ export class TokenCreator {
 
     const listInstallationsResponse = await octokit.apps.listInstallations();
     const targetInstallation = listInstallationsResponse.data.find(
-      (installation) => installation.account.login === targetAccountName
+      (installation) => installation.account.login === targetAccountName,
     );
     if (targetInstallation === undefined) {
       throw new Error(
-        `Unable to find a installation for the specified account: ${targetAccountName}`
+        `Unable to find a installation for the specified account: ${targetAccountName}`,
       );
     }
 
-    const createInstallationAccessTokenResponse = await octokit.apps.createInstallationAccessToken(
-      {
+    const createInstallationAccessTokenResponse =
+      await octokit.apps.createInstallationAccessToken({
         installation_id: targetInstallation.id,
-      }
-    );
+      });
     const iatData = createInstallationAccessTokenResponse.data;
     core.info(
-      `Installation Access Token has been generated (Expiration: ${iatData.expires_at})`
+      `Installation Access Token has been generated (Expiration: ${iatData.expires_at})`,
     );
 
     return iatData.token;

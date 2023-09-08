@@ -35,7 +35,7 @@ describe(TokenCreator, () => {
 
       // exercise & verify
       await expect(
-        octoken.getInstallationAccessToken("valid_org")
+        octoken.getInstallationAccessToken("valid_org"),
       ).resolves.toBe("v1.1234567890dummy");
     });
 
@@ -48,9 +48,9 @@ describe(TokenCreator, () => {
 
       // exercise & verify
       await expect(
-        octoken.getInstallationAccessToken("non_existent_org")
+        octoken.getInstallationAccessToken("non_existent_org"),
       ).rejects.toThrow(
-        "Unable to find a installation for the specified account: non_existent_org"
+        "Unable to find a installation for the specified account: non_existent_org",
       );
     });
   });
