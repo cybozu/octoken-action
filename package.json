@@ -30,6 +30,7 @@
     "@cybozu/eslint-config": "22.0.1",
     "@types/jest": "29.5.4",
     "@types/node": "18.17.14",
+    "@typescript-eslint/eslint-plugin": "6.6.0",
     "@vercel/ncc": "0.38.0",
     "eslint": "8.48.0",
     "eslint-config-prettier": "9.0.0",
