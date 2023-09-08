@@ -19,9 +19,8 @@ describe("Octoken", () => {
       (getInput as jest.Mock).mockImplementation((name) => inputs[name]);
 
       // Revert core.setFailed to the original implementation
-      const { setFailed: originalSetFailed } = jest.requireActual(
-        "@actions/core"
-      );
+      const { setFailed: originalSetFailed } =
+        jest.requireActual("@actions/core");
       (setFailed as jest.Mock).mockImplementation(originalSetFailed);
     });
 
@@ -74,7 +73,7 @@ describe("Octoken", () => {
       expect(setSecret).toHaveBeenCalledWith("dummy_token_for_other_org");
       expect(setOutput).toHaveBeenCalledWith(
         "token",
-        "dummy_token_for_other_org"
+        "dummy_token_for_other_org",
       );
 
       expect(process.exitCode).toBeUndefined();
