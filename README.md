@@ -1,5 +1,9 @@
 # Octoken
 
+> [!WARNING]
+> **Please note: This action is deprecated and should no longer be used. Please, migrate your workflows to the [actions/create-github-app-token](https://github.com/actions/create-github-app-token), which is being actively maintained by the official GitHub organization.**
+> **We plan to maintain it for about 6 months (until 2024/03). After that, we will archive this repository.**
+
 This action makes it easy to get a token for your GitHub App.
 
 [![GitHub Actions status](https://github.com/cybozu/octoken-action/workflows/Continuous%20Integration/badge.svg)](https://github.com/cybozu/octoken-action/actions?query=workflow%3A%22Continuous+Integration%22)
